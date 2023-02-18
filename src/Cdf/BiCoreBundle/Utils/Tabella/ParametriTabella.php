@@ -22,6 +22,9 @@ class ParametriTabella
      */
     public static function setParameter($parametro)
     {
+        if (!$parametro) {
+            return "";
+        }
         return base64_encode($parametro);
     }
 }

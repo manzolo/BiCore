@@ -14,9 +14,6 @@
     "comunedifirenze/mysql-workbench-schema-exporter": {
         "version": "v3.1.4.1"
     },
-    "comunedifirenze/user-bundle": {
-        "version": "3.0.0"
-    },
     "dbrekelmans/bdi": {
         "version": "1.0"
     },
@@ -121,6 +118,9 @@
             "ref": "a9f2e49180f75cdc71ae279a929c4b2e0638de84"
         }
     },
+    "friendsofsymfony/user-bundle": {
+        "version": "v3.1.0"
+    },
     "guzzlehttp/guzzle": {
         "version": "7.4.1"
     },
@@ -129,9 +129,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "2.1.0"
-    },
-    "hanneskod/classtools": {
-        "version": "1.2.1"
     },
     "jms/metadata": {
         "version": "1.7.0"
@@ -570,9 +567,9 @@
         "version": "5.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "5.3",
-            "ref": "09b5e809bd7a992061febd05b797c64a2d93b5cd"
+            "ref": "98f1f2b0d635908c2b40f3675da2d23b1a069d30"
         },
         "files": [
             "tests/config/packages/security.yaml"
@@ -582,12 +579,6 @@
         "version": "v5.4.0"
     },
     "symfony/security-csrf": {
-        "version": "v5.4.0"
-    },
-    "symfony/security-guard": {
-        "version": "v5.4.0"
-    },
-    "symfony/security-http": {
         "version": "v5.4.0"
     },
     "symfony/serializer": {
@@ -638,12 +629,11 @@
         "version": "5.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.3",
-            "ref": "3eb8df139ec05414489d55b97603c5f6ca0c44cb"
+            "branch": "main",
+            "version": "5.3",
+            "ref": "c32cfd98f714894c4f128bb99aa2530c1227603c"
         },
         "files": [
-            "tests/config/packages/test/validator.yaml",
             "tests/config/packages/validator.yaml"
         ]
     },

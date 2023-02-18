@@ -4,7 +4,6 @@ namespace Cdf\PannelloAmministrazioneBundle\Utils;
 
 use Exception;
 use Symfony\Component\Filesystem\Filesystem;
-use Cdf\BiCoreBundle\Utils\Api\ApiUtils;
 use Cdf\PannelloAmministrazioneBundle\Utils\Utility;
 
 class Commands
@@ -75,36 +74,20 @@ class Commands
      *
      * @return array<mixed>
      */
-    public function generateFormCrud(string $entityform, bool $generatemplate, bool $isAPI = false)
+    public function generateFormCrud(string $entityform, bool $generatemplate)
     {
         // check if some item already exist, and it interrupts the execution if any
         $pannelloamministrazioneentity = $entityform;
         /* @var $fs Filesystem */
-        if ($isAPI) {
-            $strposEntity = strpos($pannelloamministrazioneentity, ".");
-            if ($strposEntity === false) {
-                return array(
-                    'errcode' => "-101",
-                    'command' => "Ricerca entity",
-                    'message' => "Impossibile trovare il . in " . $pannelloamministrazioneentity,
-                );
-            }
-            $entityform = substr($pannelloamministrazioneentity, $strposEntity + 1);
-            $projectname = substr($pannelloamministrazioneentity, 0, $strposEntity);
-        } else {
-            $entityform = $pannelloamministrazioneentity;
-            $projectname = "";
-        }
-        $resultchk = $this->checkFormCrud($entityform, $projectname, $isAPI);
+
+        $entityform = $pannelloamministrazioneentity;
+        $projectname = "";
+        $resultchk = $this->checkFormCrud($entityform, $projectname);
 
         if (0 !== $resultchk['errcode']) {
             return $resultchk;
         }
         $formcrudparms = array('entityform' => $entityform, '--generatemplate' => $generatemplate);
-        if ($isAPI) {
-            $formcrudparms['--isApi'] = true;
-            $formcrudparms['--projectname'] = $projectname;
-        }
 
         $retmsggenerateform = $this->pammutils->runSymfonyCommand('pannelloamministrazione:generateformcrud', $formcrudparms);
 
@@ -121,7 +104,7 @@ class Commands
      *
      * @return array<mixed>
      */
-    public function checkFormCrud(string $entityform, string $projectname = "", bool $isAPI = false)
+    public function checkFormCrud(string $entityform, string $projectname = "")
     {
         /* @var $fs Filesystem */
         $fs = new Filesystem();
@@ -131,18 +114,10 @@ class Commands
             return array('errcode' => -1, 'message' => $appPath . ' non scrivibile');
         }
 
-        if (!$isAPI) {
             //Look for Entities... but they should already exist...
             $entityPath = $appPath . '/Entity' . DIRECTORY_SEPARATOR . $entityform . '.php';
-            if (!$fs->exists($entityPath)) {
-                return array('errcode' => -1, 'message' => $entityPath . ' entity non trovata');
-            }
-        } else {
-            $apiUtil = new ApiUtils();
-            $modelClass = $apiUtil->getModelClass($projectname, $entityform);
-            if (!class_exists($modelClass)) {
-                return array('errcode' => -1, 'message' => $modelClass . ' model not found');
-            }
+        if (!$fs->exists($entityPath)) {
+            return array('errcode' => -1, 'message' => $entityPath . ' entity non trovata');
         }
 
         $formPath = $appPath . '/Form/' . $entityform . 'Type.php';

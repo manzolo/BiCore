@@ -15,7 +15,6 @@ use Symfony\Component\Lock\LockInterface;
 use Cdf\PannelloAmministrazioneBundle\Utils\Utility as Pautils;
 use Cdf\PannelloAmministrazioneBundle\Utils\ProjectPath;
 use Cdf\PannelloAmministrazioneBundle\Utils\Commands as Pacmd;
-use Cdf\BiCoreBundle\Utils\Api\ApiUtils;
 use Doctrine\ORM\EntityManagerInterface as EM;
 
 /**
@@ -60,7 +59,6 @@ class PannelloAmministrazioneController extends AbstractController
         $prefixBase = 'Base';
         $entities = $this->em->getConfiguration()->getMetadataDriverImpl()->getAllClassNames();
         // compute additional API models since external bundles
-        $additionalEntities = $this->findAPIModels();
         foreach ($entities as $entity) {
             if (substr($entity, 0, strlen($prefix)) == $prefix) {
                 if (substr(substr($entity, strlen($prefix)), 0, strlen($prefixBase)) != $prefixBase) {
@@ -68,22 +66,7 @@ class PannelloAmministrazioneController extends AbstractController
                 }
             }
         }
-        // merge of found arrays
-        $outcomes = array_merge($entitiesprogetto, $additionalEntities);
-        return $outcomes;
-    }
-
-    /**
-     * It looks for Models existent into included external bundles.
-     * It uses ApiUtils in order to know where to search and what look for.
-     *
-     * @return array<mixed>
-     */
-    private function findAPIModels(): array
-    {
-        $apiUtil = new ApiUtils();
-        $apiUtil->setRootDir($this->apppaths->getVendorPath());
-        return $apiUtil->apiModels();
+        return $entitiesprogetto;
     }
 
     public function index() : Response
@@ -212,17 +195,9 @@ class PannelloAmministrazioneController extends AbstractController
             $generatemplate = 'true' === $request->get('generatemplate') ? true : false;
             $this->locksystem->acquire();
 
-            //we are working with an API?
-            $isApi = false;
-            //verify if provided string belongs to an API model
-            if (\str_contains($entityform, '(API)')) {
-                $isApi = true;
-                $entityform = trim(\str_replace('(API)', '', $entityform));
-            }
-
             // Setup an utility pack of commands (Commands.php)
             $command = $this->pacommands;
-            $result = $command->generateFormCrud($entityform, $generatemplate, $isApi);
+            $result = $command->generateFormCrud($entityform, $generatemplate);
 
             $this->locksystem->release();
             //$retcc = '';
